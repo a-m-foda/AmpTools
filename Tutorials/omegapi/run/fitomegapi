@@ -1,0 +1,82 @@
+      echo
+      echo --------------------------------
+      echo This script will try to build AMpTools and test a fit for omegapi
+      echo Make sure AMPTOOLS AMPPLOTTER AMPTOOLS_HOME are defined
+      echo --------------------------------
+      echo
+      #sleep 3
+
+
+export omegapi=$AMPTOOLS_HOME/Tutorials/omegapi
+
+      echo
+      echo --------------------------------
+      echo
+      echo COMPILE AMPTOOLS
+      echo
+      echo --------------------------------
+      echo
+      #sleep 3
+
+cd $AMPTOOLS
+make clean
+make
+
+
+      echo
+      echo --------------------------------
+      echo
+      echo COMPILE AMPPLOTTER
+      echo
+      echo --------------------------------
+      echo
+      #sleep 3
+
+cd $AMPPLOTTER
+make clean
+make
+
+      #sleep 1
+      echo
+      echo --------------------------------
+      echo
+      echo COMPILE omegapi
+      echo
+      echo --------------------------------
+      echo
+      #sleep 3
+
+cd $omegapi
+make clean
+make
+
+
+      #sleep 1
+      echo
+      echo --------------------------------
+      echo
+      echo COMPILE omegapiEXE
+      echo
+      echo --------------------------------
+      echo
+      #sleep 3
+
+cd $omegapi/omegapiExe
+make clean
+make
+
+
+      #sleep 1
+      echo
+      echo --------------------------------
+      echo
+      echo DO A FIT
+      echo
+      echo --------------------------------
+      echo
+      #sleep 3
+
+cd $omegapi/run
+$omegapi/omegapiExe/fitAmplitudes -c fit_omegapi.cfg
+
+

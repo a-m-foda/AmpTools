@@ -1,0 +1,225 @@
+//July 26th 2019, Based on DOI: 10.1016/0550-3213(84)90382-1
+
+
+#include <stdio.h>
+
+#include "GPUManager/GPUCustomTypes.h"
+#include "GPUManager/CUDA-Complex.cuh"
+
+#include "breakupMomentum.cuh"
+#include "barrierFactor.cuh"
+
+///////////////////////////////////////////////////
+#include "cuda.h"
+
+#include "GPUUtils/lorentzBoost.cuh"
+#include "GPUUtils/threeVector.cuh"
+#include "GPUUtils/wignerD.cuh"
+#include "GPUUtils/clebsch.cuh"
+
+///////////////////////////////////////////
+#define ADD4(a,b) { a[0]+b[0], a[1]+b[1], a[2]+b[2], a[3]+b[3] }
+
+#define MASS(v)   (G_SQRT(v[0]*v[0]-v[1]*v[1]-v[2]*v[2]-v[3]*v[3]))
+
+#define Nterm(J)  (G_SQRT((2*J+1)/(4*M_PI)))
+
+
+// Macro to ease definition of loops
+#define LOOP(INDEX,START,END,INC) for (int INDEX=START;INDEX<=END;INDEX+=INC)
+////////////////////////////////////////////////////////////////////////////////////////
+static __device__ void //note: 4-vector input presumed
+rotateZ( GDouble* v, GDouble phi ){
+  GDouble sinphi = G_SIN(phi);
+  GDouble cosphi = G_COS(phi);
+  GDouble tx;
+  tx   = v[1] * cosphi - v[2] * sinphi;
+  v[2] = v[2] * cosphi + v[1] * sinphi;
+  v[1] = tx;
+}
+
+static __device__ void //note: 4-vector input presumed
+rotateY ( GDouble* v, GDouble theta) {
+  double sinphi = G_SIN(theta);
+  double cosphi = G_COS(theta);
+  double tz;
+  tz = v[3] * cosphi - v[1] * sinphi;
+  v[1] = v[1] * cosphi + v[3] * sinphi;
+  v[3] = tz;
+}
+
+static __device__ GDouble  //note: 3-vector input presumed
+theta( GDouble* pv ){
+  GDouble r= G_SQRT(pv[0]*pv[0] + pv[1]*pv[1]);
+  return  G_ATAN2( r , pv[2] );
+}
+
+
+//static __device__ GDouble  //note: 3-vector input presumed
+//phi( GDouble* pv ){
+//  return  G_ATAN2( pv[1] , pv[0] );
+//}
+
+
+static __device__ void
+MoveToRF(GDouble *parent, GDouble *daughter)
+{
+  GDouble *par3vec=parent+1;
+  rotateZ( daughter , -phi(par3vec) );
+  rotateY( daughter , -theta(par3vec) );
+
+  GDouble beta[]={0,0, -G_SQRT(dot(par3vec,par3vec))/parent[0]};
+  //** (x)  Might this be bootToRest???
+  // beta is defined to boost to parent's rest frame
+  // I just adapted GPUUtil boost fcn with vector beta input
+  boost( daughter , beta );
+
+}
+
+
+
+static __device__ WCUComplex
+BreitWigner_loc(GDouble m0, GDouble Gamma0, int L,
+                GDouble *P1, GDouble *P2)
+{
+  
+  GDouble  Ptot[4] = ADD4(P1, P2);  
+  GDouble m  = MASS(Ptot);
+  GDouble mass1 = MASS(P1);
+  GDouble mass2 = MASS(P2);
+  
+  
+  // assert positive breakup momenta     
+  GDouble q0 = fabs( breakupMomentum(m0, mass1, mass2) );
+  GDouble q  = fabs( breakupMomentum(m,  mass1, mass2) );
+  
+  //printf("BW: (%5.3f, %5.3f, %d) m=%6.4f m1=%6.4f m2=%6.4f q=%6.4f q0=%6.4f\n",
+  //  m0,Gamma0,L,m,mass1,mass2,q,q0);
+  
+  GDouble F0 = L==0 ? 1.0 : barrierFactor(q0, L);
+  GDouble F  = L==0 ? 1.0 : barrierFactor(q,  L);
+  
+  GDouble width_coef=Gamma0*(m0/m);
+  //GDouble qq0=q/q0;
+  //GDouble width_qdep = (L==0 ? qq0 : (L==1 ? qq0*qq0*qq0 : pow(qq0,2*L+1)))*((F*F)/(F0*F0));
+  GDouble width_qdep = q/q0  * (F*F)/(F0*F0);
+  //GDouble num_qdep = (L==0 ? q : (L==1 ? q*q*q : pow(q,2*L+1)))*(F*F);
+  GDouble num_qdep = q*(F*F);
+  
+  GDouble width = width_coef * width_qdep;
+  
+  //complex<GDouble> bwtop(m0 * width, 0.0 );
+  WCUComplex bwtop = { G_SQRT(m0*width_coef) * num_qdep, 0 };
+  
+  WCUComplex bwbottom =  { m0*m0 - m*m  , -1.0 * ( m0 * width ) };
+  
+  return  ( bwtop / bwbottom );
+  
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+__global__ void
+GPUomegapiAngAmp_kernel( GPU_AMP_PROTO, GDouble m_1p, GDouble m_w_1p, GDouble m_n_1p, GDouble m_1m, GDouble m_w_1m, GDouble m_n_1m,
+                            GDouble m_0m, GDouble m_w_0m, GDouble m_n_0m, GDouble m_ds_ratio, GDouble m_phi0_1p,
+                            GDouble m_theta_1p, GDouble m_phip_1p, GDouble m_phim_1p, GDouble m_psi_1p,
+			    GDouble m_phi0_1m, GDouble m_theta_1m, GDouble m_phip_1m, GDouble m_phim_1m,
+                            GDouble m_psi_1m, GDouble m_phi0_0m, GDouble m_theta_0m, bool useCutoff, GDouble polAngle, GDouble polFraction ){
+
+	int iEvent = GPU_THIS_EVENT;
+//////////////////////////////////////////// Get and create 4-vectors /////////////////////////////////////////
+  GDouble  beam     [4] = GPU_P4(0);
+  GDouble  target   [4] = {0.938, 0.0, 0.0, 0.0};
+  GDouble  recoil   [4] = GPU_P4(1);
+  GDouble  b1s_pi   [4] = GPU_P4(2);
+  GDouble  omegas_pi[4] = GPU_P4(3);
+  GDouble  rhos_pip [4] = GPU_P4(4);
+  GDouble  rhos_pim [4] = GPU_P4(5);
+
+  //  Make four-vector sums
+  GDouble  rho   [4] = ADD4(rhos_pip, rhos_pim );
+  GDouble  omega [4] = ADD4(rho,     omegas_pi);
+  GDouble  b1    [4] = ADD4(omega,   b1s_pi);
+  GDouble  gammap[4] = ADD4(beam,   target);
+
+//////////////////////////////////////////// Calculate omega pi helicity angles /////////////////////////////////////////
+
+  //omega angles in b1 decay the daughter = omega, parent = b1, InverseOfX = beam, rf = gammap
+  MoveToRF(gammap,beam);
+  MoveToRF(gammap,b1);
+  MoveToRF(gammap,omega);    MoveToRF(b1,omega);
+
+  GDouble z[3] = { b1[1], b1[2], b1[3] };
+  makeUnit( z );
+  GDouble y[3] = { beam[1], beam[2], beam[3] };
+  cross( y, z );
+  makeUnit( y );
+  GDouble x[3] = { y[0], y[1], y[2] };
+  cross( x, z );
+
+  GDouble *omega_3vec=omega+1;
+  GDouble ang_omega[]={dot(omega_3vec, x),
+                    dot(omega_3vec, y),
+                    dot(omega_3vec, z)};
+  GDouble omega_cosTheta = G_COS(theta(ang_omega));
+  GDouble omega_phi      = phi(ang_omega);
+////////////////////////////////////////////
+  
+//normal to the piplus+piminus plane angles in the b1 decay the daughter = piplus, parent = omega, InverseOfX = b1, rf = gammap, seconddaughter = piminus
+  MoveToRF(gammap,rhos_pip); MoveToRF(b1,rhos_pip); MoveToRF(omega,rhos_pip);
+  MoveToRF(gammap,rhos_pim); MoveToRF(b1,rhos_pim); MoveToRF(omega,rhos_pim);
+  
+  GDouble zh[3] = { omega[1], omega[2], omega[3] };
+  makeUnit( zh );
+  GDouble yh[3] = { b1[1], b1[2], b1[3] };
+  cross( yh, zh );
+  makeUnit( yh );
+  GDouble xh[3] = { yh[0], yh[1], yh[2] };
+  cross( xh, zh );
+
+  GDouble normal_3vec[3] = { rhos_pip[1], rhos_pip[2], rhos_pip[3] };
+  cross( normal_3vec, rhos_pim );
+  makeUnit( normal_3vec );
+
+  GDouble ang_normal[]={dot(normal_3vec, xh),
+                    dot(normal_3vec, yh),
+                    dot(normal_3vec, zh)};
+  GDouble cosThetah = G_COS(theta(ang_normal));
+  GDouble phih      = phi(ang_normal);
+/////////////////////////////////////////////////////////////////   
+
+  GDouble b1mass = MASS(b1);
+
+  GDouble q = breakupMomentum( MASS(b1), MASS(omega), MASS(b1s_pi) );
+
+  GDouble alpha = phi( &(recoil[1]) );
+
+  GDouble cosAlpha=G_COS(alpha), sinAlpha=G_SIN(alpha);
+
+////////////////////////////////////////////////////////////////////////////////////        
+  // decode the list of daughter indices in each integer
+  // be careful to handle the zero index correctly
+  WCUComplex CZero = { 0, 0 };
+  WCUComplex COne  = { 1, 0 };
+
+  pcDevAmp[iEvent] = COne;
+}
+
+
+void
+GPUomegapiAngAmp_exec( dim3 dimGrid, dim3 dimBlock, GPU_AMP_PROTO, 
+                     GDouble m_1p, GDouble m_w_1p, GDouble m_n_1p, GDouble m_1m, GDouble m_w_1m, GDouble m_n_1m,
+                            GDouble m_0m, GDouble m_w_0m, GDouble m_n_0m, GDouble m_ds_ratio, GDouble m_phi0_1p,
+                            GDouble m_theta_1p, GDouble m_phip_1p, GDouble m_phim_1p, GDouble m_psi_1p,
+			    GDouble m_phi0_1m, GDouble m_theta_1m, GDouble m_phip_1m, GDouble m_phim_1m,
+                            GDouble m_psi_1m, GDouble m_phi0_0m, GDouble m_theta_0m, bool useCutoff, GDouble polAngle, GDouble polFraction )
+{  
+
+  GPUomegapiAngAmp_kernel<<< dimGrid, dimBlock >>>
+    ( GPU_AMP_ARGS, m_1p, m_w_1p, m_n_1p, m_1m, m_w_1m, m_n_1m,
+                            m_0m, m_w_0m, m_n_0m, m_ds_ratio, m_phi0_1p,
+                            m_theta_1p, m_phip_1p, m_phim_1p, m_psi_1p,
+			    m_phi0_1m, m_theta_1m, m_phip_1m, m_phim_1m,
+                            m_psi_1m, m_phi0_0m, m_theta_0m, useCutoff, polAngle, polFraction );
+}
+
+
