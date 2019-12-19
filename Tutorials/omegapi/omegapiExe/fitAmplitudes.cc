@@ -11,6 +11,7 @@
 #include "omegapiDataIO/ROOTDataReader.h"
 #include "omegapiDataIO/ROOTDataReaderBootstrap.h"
 #include "omegapiDataIO/ROOTDataReaderWithTCut.h"
+#include "omegapiDataIO/ROOTDataReaderTEM.h"
 #include "omegapiAmp/omegapiAngAmp.h"
 
 #include "MinuitInterface/MinuitMinimizationManager.h"
@@ -66,6 +67,7 @@ int main( int argc, char* argv[] ){
   AmpToolsInterface::registerDataReader( ROOTDataReader() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderBootstrap() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderWithTCut() );
+  AmpToolsInterface::registerDataReader( ROOTDataReaderTEM() );
   
   AmpToolsInterface ati( cfgInfo );
   
