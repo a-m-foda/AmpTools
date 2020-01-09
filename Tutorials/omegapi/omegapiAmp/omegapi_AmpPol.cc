@@ -101,7 +101,6 @@ omegapi_AmpPol::omegapi_AmpPol( const vector< string >& args ):
     vertex_2_p_m_p2 = AmpParameter(args[6+17]);
 
     registerParameter(vertex_0_m_m_0);
-    registerParameter(vertex_0_p_m_0);
 
     registerParameter(vertex_1_m_m_m1);
     registerParameter(vertex_1_m_m_0);
@@ -302,7 +301,7 @@ void
 omegapi_AmpPol::launchGPUKernel( dim3 dimGrid, dim3 dimBlock, GPU_AMP_PROTO ) const {
     
   GPUomegapi_AmpPol_exec( dimGrid, dimBlock, GPU_AMP_ARGS, 
-			  term_sign, hel_c_0_m_1, hel_c_1_m_1, hel_c_1_p_0, hel_c_1_p_2, hel_c_2_m_1, hel_c_2_p_2, vertex_0_m_m_0, vertex_0_p_m_0, 
+			  term_sign, hel_c_0_m_1, hel_c_1_m_1, hel_c_1_p_0, hel_c_1_p_2, hel_c_2_m_1, hel_c_2_p_2, vertex_0_m_m_0, 
 			  vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, vertex_2_m_m_m2, 
 			  vertex_2_m_m_m1, vertex_2_m_m_0, vertex_2_m_m_p1, vertex_2_m_m_p2, vertex_2_p_m_m2, vertex_2_p_m_m1, vertex_2_p_m_0, 
 			  vertex_2_p_m_p1, vertex_2_p_m_p2, dalitz_alpha, dalitz_beta, dalitz_gamma, dalitz_delta, polAngle, polFraction);
