@@ -31,16 +31,16 @@ TLorentzVector targetopi2(0,0,0,0.938);
 omegapi_AmpPol::omegapi_AmpPol( const vector< string >& args ):
   UserAmplitude< omegapi_AmpPol >( args )
 {
-	assert( args.size() == (6+18+4+2) || args.size() == (6+18+4+3) );
+	assert( args.size() == (6+17+4+2) || args.size() == (6+17+4+3) );
 	
-	if(args.size() == (6+18+4+3)){
-		polAngle  = atof(args[6+18+4+1].c_str() ); // azimuthal angle of the photon polarization vector in the lab measured in degrees.
-		polFraction = AmpParameter( args[6+18+4+2] ); // polarization fraction
+	if(args.size() == (6+17+4+3)){
+		polAngle  = atof(args[6+17+4+1].c_str() ); // azimuthal angle of the photon polarization vector in the lab measured in degrees.
+		polFraction = AmpParameter( args[6+17+4+2] ); // polarization fraction
 		std::cout << "Fixed polarization fraction =" << polFraction << " and pol.angle= " << polAngle << " degrees." << std::endl;
 	}
-	else if (args.size() == (6+18+4+2)){
+	else if (args.size() == (6+17+4+2)){
 		// BeamProperties configuration file
-		TString beamConfigFile = args[6+18+4+1].c_str();
+		TString beamConfigFile = args[6+17+4+1].c_str();
 		BeamProperties beamProp(beamConfigFile);
 		polFrac_vs_E = (TH1D*)beamProp.GetPolFrac();
 		polAngle = beamProp.GetPolAngle();
@@ -77,130 +77,28 @@ omegapi_AmpPol::omegapi_AmpPol( const vector< string >& args ):
     registerParameter(hel_c_2_m_1);
     registerParameter(hel_c_2_p_2);
 
-//     //vertex_spin_lambda-gamma_Lambda
-//     vertex_0_m_m_0 = AmpParameter(args[7+1]);
-//     vertex_0_m_p_0 = AmpParameter(args[7+2]);
-// 
-//     vertex_0_p_m_0 = AmpParameter(args[7+3]);
-//     vertex_0_p_p_0 = AmpParameter(args[7+4]);
-// 
-//     vertex_1_m_m_m1 = AmpParameter(args[7+5]);
-//     vertex_1_m_m_0 = AmpParameter(args[7+6]);
-//     vertex_1_m_m_p1 = AmpParameter(args[7+7]);
-// 
-//     vertex_1_m_p_m1 = AmpParameter(args[7+8]);
-//     vertex_1_m_p_0 = AmpParameter(args[7+9]);
-//     vertex_1_m_p_p1 = AmpParameter(args[7+10]);
-// 
-//     vertex_1_p_m_m1 = AmpParameter(args[7+11]);
-//     vertex_1_p_m_0 = AmpParameter(args[7+12]);
-//     vertex_1_p_m_p1 = AmpParameter(args[7+13]);
-// 
-//     vertex_1_p_p_m1 = AmpParameter(args[7+14]);
-//     vertex_1_p_p_0 = AmpParameter(args[7+15]);
-//     vertex_1_p_p_p1 = AmpParameter(args[7+16]);
-// 
-//     vertex_2_m_m_m2 = AmpParameter(args[7+17]);
-//     vertex_2_m_m_m1 = AmpParameter(args[25+]);
-//     vertex_2_m_m_0 = AmpParameter(args[7+19]);
-//     vertex_2_m_m_p1 = AmpParameter(args[7+20]);
-//     vertex_2_m_m_p2 = AmpParameter(args[7+21]);
-// 
-//     vertex_2_m_p_m2 = AmpParameter(args[7+22]);
-//     vertex_2_m_p_m1 = AmpParameter(args[7+23]);
-//     vertex_2_m_p_0 = AmpParameter(args[7+24]);
-//     vertex_2_m_p_p1 = AmpParameter(args[7+25]);
-//     vertex_2_m_p_p2 = AmpParameter(args[7+26]);
-// 
-//     vertex_2_p_m_m2 = AmpParameter(args[7+27]);
-//     vertex_2_p_m_m1 = AmpParameter(args[7+28]);
-//     vertex_2_p_m_0 = AmpParameter(args[7+29]);
-//     vertex_2_p_m_p1 = AmpParameter(args[7+30]);
-//     vertex_2_p_m_p2 = AmpParameter(args[7+31]);
-// 
-//     vertex_2_p_p_m2 = AmpParameter(args[7+32]);
-//     vertex_2_p_p_m1 = AmpParameter(args[7+33]);
-//     vertex_2_p_p_0 = AmpParameter(args[7+34]);
-//     vertex_2_p_p_p1 = AmpParameter(args[7+35]);
-//     vertex_2_p_p_p2 = AmpParameter(args[7+36]);
-// 
-//     registerParameter(vertex_0_m_m_0);
-//     registerParameter(vertex_0_m_p_0);
-// 
-//     registerParameter(vertex_0_p_m_0);
-//     registerParameter(vertex_0_p_p_0);
-// 
-//     registerParameter(vertex_1_m_m_m2);
-//     registerParameter(vertex_1_m_m_m1);
-//     registerParameter(vertex_1_m_m_0);
-//     registerParameter(vertex_1_m_m_p1);
-//     registerParameter(vertex_1_m_m_p2);
-// 
-//     registerParameter(vertex_1_m_p_m2);
-//     registerParameter(vertex_1_m_p_m1);
-//     registerParameter(vertex_1_m_p_0);
-//     registerParameter(vertex_1_m_p_p1);
-//     registerParameter(vertex_1_m_p_p2);
-// 
-//     registerParameter(vertex_1_p_m_m2);
-//     registerParameter(vertex_1_p_m_m1);
-//     registerParameter(vertex_1_p_m_0);
-//     registerParameter(vertex_1_p_m_p1);
-//     registerParameter(vertex_1_p_m_p2);
-// 
-//     registerParameter(vertex_1_p_p_m2);
-//     registerParameter(vertex_1_p_p_m1);
-//     registerParameter(vertex_1_p_p_0);
-//     registerParameter(vertex_1_p_p_p1);
-//     registerParameter(vertex_1_p_p_p2);
-// 
-//     registerParameter(vertex_2_m_m_m2);
-//     registerParameter(vertex_2_m_m_m1);
-//     registerParameter(vertex_2_m_m_0);
-//     registerParameter(vertex_2_m_m_p1);
-//     registerParameter(vertex_2_m_m_p2);
-// 
-//     registerParameter(vertex_2_m_p_m2);
-//     registerParameter(vertex_2_m_p_m1);
-//     registerParameter(vertex_2_m_p_0);
-//     registerParameter(vertex_2_m_p_p1);
-//     registerParameter(vertex_2_m_p_p2);
-// 
-//     registerParameter(vertex_2_p_m_m2);
-//     registerParameter(vertex_2_p_m_m1);
-//     registerParameter(vertex_2_p_m_0);
-//     registerParameter(vertex_2_p_m_p1);
-//     registerParameter(vertex_2_p_m_p2);
-// 
-//     registerParameter(vertex_2_p_p_m2);
-//     registerParameter(vertex_2_p_p_m1);
-//     registerParameter(vertex_2_p_p_0);
-//     registerParameter(vertex_2_p_p_p1);
-//     registerParameter(vertex_2_p_p_p2);
-// 
    //Implement vertex symmetries
     vertex_0_m_m_0 = AmpParameter(args[6+1]);
-    vertex_0_p_m_0 = AmpParameter(args[6+2]);
-  
-    vertex_1_m_m_m1 = AmpParameter(args[6+3]);
-    vertex_1_m_m_0 = AmpParameter(args[6+4]);
-    vertex_1_m_m_p1 = AmpParameter(args[6+5]);
 
-    vertex_1_p_m_m1 = AmpParameter(args[6+6]);
-    vertex_1_p_m_0 = AmpParameter(args[6+7]);
-    vertex_1_p_m_p1 = AmpParameter(args[6+8]);
+    vertex_1_m_m_m1 = AmpParameter(args[6+2]);
+    vertex_1_m_m_0 = AmpParameter(args[6+3]);
+    vertex_1_m_m_p1 = AmpParameter(args[6+4]);
 
-    vertex_2_m_m_m2 = AmpParameter(args[6+9]);
-    vertex_2_m_m_m1 = AmpParameter(args[6+10]);
-    vertex_2_m_m_0 = AmpParameter(args[6+11]);
-    vertex_2_m_m_p1 = AmpParameter(args[6+12]);
-    vertex_2_m_m_p2 = AmpParameter(args[6+13]);
+    vertex_1_p_m_m1 = AmpParameter(args[6+5]);
+    vertex_1_p_m_0 = AmpParameter(args[6+6]);
+    vertex_1_p_m_p1 = AmpParameter(args[6+7]);
 
-    vertex_2_p_m_m2 = AmpParameter(args[6+14]);
-    vertex_2_p_m_m1 = AmpParameter(args[6+15]);
-    vertex_2_p_m_0 = AmpParameter(args[6+16]);
-    vertex_2_p_m_p1 = AmpParameter(args[6+17]);
-    vertex_2_p_m_p2 = AmpParameter(args[6+18]);
+    vertex_2_m_m_m2 = AmpParameter(args[6+8]);
+    vertex_2_m_m_m1 = AmpParameter(args[6+9]);
+    vertex_2_m_m_0 = AmpParameter(args[6+10]);
+    vertex_2_m_m_p1 = AmpParameter(args[6+11]);
+    vertex_2_m_m_p2 = AmpParameter(args[6+12]);
+
+    vertex_2_p_m_m2 = AmpParameter(args[6+13]);
+    vertex_2_p_m_m1 = AmpParameter(args[6+14]);
+    vertex_2_p_m_0 = AmpParameter(args[6+15]);
+    vertex_2_p_m_p1 = AmpParameter(args[6+16]);
+    vertex_2_p_m_p2 = AmpParameter(args[6+17]);
 
     registerParameter(vertex_0_m_m_0);
     registerParameter(vertex_0_p_m_0);
@@ -226,10 +124,10 @@ omegapi_AmpPol::omegapi_AmpPol( const vector< string >& args ):
     registerParameter(vertex_2_p_m_p2);
     
    //Dalitz Parameters
-   dalitz_alpha  = AmpParameter(args[6+18+1]);
-   dalitz_beta  = AmpParameter(args[6+18+2]);
-   dalitz_gamma  = AmpParameter(args[6+18+3]);
-   dalitz_delta  = AmpParameter(args[6+18+4]);
+   dalitz_alpha  = AmpParameter(args[6+17+1]);
+   dalitz_beta  = AmpParameter(args[6+17+2]);
+   dalitz_gamma  = AmpParameter(args[6+17+3]);
+   dalitz_delta  = AmpParameter(args[6+17+4]);
 
    registerParameter(dalitz_alpha);
    registerParameter(dalitz_beta);
@@ -318,36 +216,10 @@ omegapi_AmpPol::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
 			    { {0.0, hel_c_1_m_1, 0.0}, {hel_c_1_p_0, 0.0, hel_c_1_p_2} },
 			    { {0.0, hel_c_2_m_1, 0.0}, {0.0, 0.0, hel_c_2_p_2} }
 			      };//hel_c_spin_p_odd = 0 & hel_c_spin_m_even = 0 
-
-//   GDouble vertex[3][2][2][5]= {
-// 			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, vertex_0_m_p_0, 0.0, 0.0} }, { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, 
-// 			      {0.0, 0.0, vertex_0_p_p_0, 0.0, 0.0} } },
-// 
-// 			      { { {0.0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, 0.0}, {0.0, vertex_1_m_p_m1, vertex_1_m_p_0, vertex_1_m_p_p1, 0.0} }, 
-// 			      { {0.0, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, 0.0}, {0.0, vertex_1_p_p_m1, vertex_1_p_p_0, vertex_1_p_p_p1, 0.0} } },
-// 
-// 			      { { {vertex_2_m_m_m2, vertex_2_m_m_m1, vertex_2_m_m_0, vertex_2_m_m_p1, vertex_2_m_m_p2},
-// 			      {vertex_2_m_p_m2, vertex_2_m_p_m1, vertex_2_m_p_0, vertex_2_m_p_p1, vertex_2_m_p_p2} },
-// 			      { {vertex_2_p_m_m2, vertex_2_p_m_m1, vertex_2_p_m_0, vertex_2_p_m_p1, vertex_2_p_m_p2}, 
-// 			      {vertex_2_p_p_m2, vertex_2_p_p_m1, vertex_2_p_p_0, vertex_2_p_p_p1, vertex_2_p_p_p2} } }
-// 			      };// vertex_spin_parity_photon-helicity_proton-helicity
-    
-//   GDouble vertex[3][2][2][5]= {//symmetry eq(7) assuming tau_e = +1
-// 			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0} }, { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, 
-// 			      {0.0, 0.0, (-1.0*vertex_0_p_m_0), 0.0, 0.0} } },
-// 
-// 			      { { {0.0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, 0.0}, {0.0, vertex_1_m_m_p1, (-1.0*vertex_1_m_m_0), vertex_1_m_m_m1, 0.0} }, 
-// 			      { {0.0, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, 0.0}, {0.0, (-1.0*vertex_1_p_m_p1), vertex_1_p_m_0, (-1.0*vertex_1_p_m_m1), 0.0} } },
-// 
-// 			      { { {vertex_2_m_m_m2, vertex_2_m_m_m1, vertex_2_m_m_0, vertex_2_m_m_p1, vertex_2_m_m_p2},
-// 			      {vertex_2_m_m_p2, (-1.0*vertex_2_m_m_p1), vertex_2_m_m_0, (-1.0*vertex_2_m_m_m1), vertex_2_m_m_m2} },
-// 			      { {vertex_2_p_m_m2, vertex_2_p_m_m1, vertex_2_p_m_0, vertex_2_p_m_p1, vertex_2_p_m_p2}, 
-// 			      {(-1.0*vertex_2_p_m_p2), vertex_2_p_m_p1, (-1.0*vertex_2_p_m_0), vertex_2_p_m_m1, (-1.0*vertex_2_p_m_m2)} } }
-// 			      };// vertex_spin_parity_photon-helicity_proton-helicity
     
   GDouble vertex[3][2][2][5]= {//symmetry eq(7) assuming tau_e = +1
-			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0} },
-			      { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, {0.0, 0.0, -vertex_0_p_m_0, 0.0, 0.0} } },
+			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} },
+			      { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} } },
 
 			      { { {0.0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, 0.0}, {0.0, vertex_1_m_m_p1, -vertex_1_m_m_0, vertex_1_m_m_m1, 0.0} }, 
 			      { {0.0, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, 0.0}, {0.0, -vertex_1_p_m_p1, vertex_1_p_m_0, -vertex_1_p_m_m1, 0.0} } },
