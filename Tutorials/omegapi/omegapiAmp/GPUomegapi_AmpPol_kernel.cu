@@ -1,4 +1,4 @@
-//Dec 14th 2019, Based on DOI: 10.1016/0550-3213(84)90382-1
+//Dec 14th 2019
 
 
 #include <stdio.h>
@@ -27,7 +27,7 @@
  __device__ GDouble DegToRad = PI/180.0;
 ///////////////////////////////////////////////////////////////////////////////
 __global__ void
-GPUomegapi_AmpPol_kernel( GPU_AMP_PROTO, int term_sign, GDouble hel_c_0_m_1, GDouble hel_c_1_m_1, GDouble hel_c_1_p_0, GDouble hel_c_1_p_2, GDouble hel_c_2_m_1, GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_0_p_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, GDouble vertex_1_m_m_p1, GDouble vertex_1_p_m_m1, GDouble vertex_1_p_m_0, GDouble vertex_1_p_m_p1, GDouble vertex_2_m_m_m2, GDouble vertex_2_m_m_m1, GDouble vertex_2_m_m_0, GDouble vertex_2_m_m_p1, GDouble vertex_2_m_m_p2, GDouble vertex_2_p_m_m2, GDouble vertex_2_p_m_m1, GDouble vertex_2_p_m_0, GDouble vertex_2_p_m_p1, GDouble vertex_2_p_m_p2, GDouble dalitz_alpha, GDouble dalitz_beta, GDouble dalitz_gamma, GDouble dalitz_delta, GDouble polAngle, GDouble polFraction)
+GPUomegapi_AmpPol_kernel( GPU_AMP_PROTO, int term_sign, GDouble hel_c_0_m_1, GDouble hel_c_1_m_1, GDouble hel_c_1_p_0, GDouble hel_c_1_p_2, GDouble hel_c_2_m_1, GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, GDouble vertex_1_m_m_p1, GDouble vertex_1_p_m_m1, GDouble vertex_1_p_m_0, GDouble vertex_1_p_m_p1, GDouble vertex_2_m_m_m2, GDouble vertex_2_m_m_m1, GDouble vertex_2_m_m_0, GDouble vertex_2_m_m_p1, GDouble vertex_2_m_m_p2, GDouble vertex_2_p_m_m2, GDouble vertex_2_p_m_m1, GDouble vertex_2_p_m_0, GDouble vertex_2_p_m_p1, GDouble vertex_2_p_m_p2, GDouble dalitz_alpha, GDouble dalitz_beta, GDouble dalitz_gamma, GDouble dalitz_delta, GDouble polAngle, GDouble polFraction)
 {
 	int iEvent = GPU_THIS_EVENT;
 
@@ -39,7 +39,7 @@ GPUomegapi_AmpPol_kernel( GPU_AMP_PROTO, int term_sign, GDouble hel_c_0_m_1, GDo
 
   GDouble vertex[3][2][2][5]= {//symmetry eq(7) assuming tau_e = +1
 			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0} },
-			      { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, {0.0, 0.0, -vertex_0_p_m_0, 0.0, 0.0} } },
+			      { {0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} } },
 
 			      { { {0.0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, 0.0}, 
 				{0.0, vertex_1_m_m_p1, -vertex_1_m_m_0, vertex_1_m_m_m1, 0.0} }, 
@@ -119,11 +119,11 @@ GPUomegapi_AmpPol_kernel( GPU_AMP_PROTO, int term_sign, GDouble hel_c_0_m_1, GDo
 
 void
 GPUomegapi_AmpPol_exec( dim3 dimGrid, dim3 dimBlock, GPU_AMP_PROTO, 
-			int term_sign, GDouble hel_c_0_m_1, GDouble hel_c_1_m_1, GDouble hel_c_1_p_0, GDouble hel_c_1_p_2, GDouble hel_c_2_m_1, GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_0_p_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, GDouble vertex_1_m_m_p1, GDouble vertex_1_p_m_m1, GDouble vertex_1_p_m_0, GDouble vertex_1_p_m_p1, GDouble vertex_2_m_m_m2, GDouble vertex_2_m_m_m1, GDouble vertex_2_m_m_0, GDouble vertex_2_m_m_p1, GDouble vertex_2_m_m_p2, GDouble vertex_2_p_m_m2, GDouble vertex_2_p_m_m1, GDouble vertex_2_p_m_0, GDouble vertex_2_p_m_p1, GDouble vertex_2_p_m_p2, GDouble dalitz_alpha, GDouble dalitz_beta, GDouble dalitz_gamma, GDouble dalitz_delta, GDouble polAngle, GDouble polFraction)
+			int term_sign, GDouble hel_c_0_m_1, GDouble hel_c_1_m_1, GDouble hel_c_1_p_0, GDouble hel_c_1_p_2, GDouble hel_c_2_m_1, GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, GDouble vertex_1_m_m_p1, GDouble vertex_1_p_m_m1, GDouble vertex_1_p_m_0, GDouble vertex_1_p_m_p1, GDouble vertex_2_m_m_m2, GDouble vertex_2_m_m_m1, GDouble vertex_2_m_m_0, GDouble vertex_2_m_m_p1, GDouble vertex_2_m_m_p2, GDouble vertex_2_p_m_m2, GDouble vertex_2_p_m_m1, GDouble vertex_2_p_m_0, GDouble vertex_2_p_m_p1, GDouble vertex_2_p_m_p2, GDouble dalitz_alpha, GDouble dalitz_beta, GDouble dalitz_gamma, GDouble dalitz_delta, GDouble polAngle, GDouble polFraction)
 
 {  
 
   GPUomegapi_AmpPol_kernel<<< dimGrid, dimBlock >>>
-    ( GPU_AMP_ARGS, term_sign, hel_c_0_m_1, hel_c_1_m_1, hel_c_1_p_0, hel_c_1_p_2, hel_c_2_m_1, hel_c_2_p_2, vertex_0_m_m_0, vertex_0_p_m_0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, vertex_2_m_m_m2, vertex_2_m_m_m1, vertex_2_m_m_0, vertex_2_m_m_p1, vertex_2_m_m_p2, vertex_2_p_m_m2, vertex_2_p_m_m1, vertex_2_p_m_0, vertex_2_p_m_p1, vertex_2_p_m_p2, dalitz_alpha, dalitz_beta, dalitz_gamma, dalitz_delta, polAngle, polFraction);
+    ( GPU_AMP_ARGS, term_sign, hel_c_0_m_1, hel_c_1_m_1, hel_c_1_p_0, hel_c_1_p_2, hel_c_2_m_1, hel_c_2_p_2, vertex_0_m_m_0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, vertex_2_m_m_m2, vertex_2_m_m_m1, vertex_2_m_m_0, vertex_2_m_m_p1, vertex_2_m_m_p2, vertex_2_p_m_m2, vertex_2_p_m_m1, vertex_2_p_m_0, vertex_2_p_m_p1, vertex_2_p_m_p2, dalitz_alpha, dalitz_beta, dalitz_gamma, dalitz_delta, polAngle, polFraction);
 
 }
