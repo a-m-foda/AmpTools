@@ -13,6 +13,7 @@
 #include "omegapiDataIO/ROOTDataReaderWithTCut.h"
 #include "omegapiDataIO/ROOTDataReaderTEM.h"
 #include "omegapiAmp/omegapiAngAmp.h"
+#include "omegapiAmp/omegapi_AmpPol.h"
 
 #include "MinuitInterface/MinuitMinimizationManager.h"
 #include "IUAmpTools/AmpToolsInterface.h"
@@ -63,6 +64,7 @@ int main( int argc, char* argv[] ){
   cfgInfo->display();
 
   AmpToolsInterface::registerAmplitude( omegapiAngAmp() );
+  AmpToolsInterface::registerAmplitude( omegapi_AmpPol() );
   
   AmpToolsInterface::registerDataReader( ROOTDataReader() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderBootstrap() );
