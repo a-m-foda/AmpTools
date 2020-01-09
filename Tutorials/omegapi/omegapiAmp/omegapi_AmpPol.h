@@ -18,7 +18,7 @@
 #ifdef GPU_ACCELERATION
 void GPUomegapi_AmpPol_exec( dim3 dimGrid, dim3 dimBlock, GPU_AMP_PROTO, 
 			     int term_sign, GDouble hel_c_0_m_1, GDouble hel_c_1_m_1, GDouble hel_c_1_p_0, GDouble hel_c_1_p_2, GDouble hel_c_2_m_1, 
-			     GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_0_p_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, 
+			     GDouble hel_c_2_p_2, GDouble vertex_0_m_m_0, GDouble vertex_1_m_m_m1, GDouble vertex_1_m_m_0, 
 			     GDouble vertex_1_m_m_p1, GDouble vertex_1_p_m_m1, GDouble vertex_1_p_m_0, GDouble vertex_1_p_m_p1, GDouble vertex_2_m_m_m2, 
 			     GDouble vertex_2_m_m_m1, GDouble vertex_2_m_m_0, GDouble vertex_2_m_m_p1, GDouble vertex_2_m_m_p2, GDouble vertex_2_p_m_m2, 
 			     GDouble vertex_2_p_m_m1, GDouble vertex_2_p_m_0, GDouble vertex_2_p_m_p1, GDouble vertex_2_p_m_p2, GDouble dalitz_alpha, 
@@ -89,7 +89,6 @@ private:
         AmpParameter hel_c_2_p_2;
 
 	AmpParameter vertex_0_m_m_0;
-	AmpParameter vertex_0_p_m_0;
 
 	AmpParameter vertex_1_m_m_m1;
 	AmpParameter vertex_1_m_m_0;
@@ -110,60 +109,6 @@ private:
 	AmpParameter vertex_2_p_m_0;
 	AmpParameter vertex_2_p_m_p1;
 	AmpParameter vertex_2_p_m_p2;
-
-// 	AmpParameter vertex_0_m_m_0;
-// 	AmpParameter vertex_0_m_p_0;
-// 
-// 	AmpParameter vertex_0_p_m_0;
-// 	AmpParameter vertex_0_p_p_0;
-// 
-// 	AmpParameter vertex_1_m_m_m2;
-// 	AmpParameter vertex_1_m_m_m1;
-// 	AmpParameter vertex_1_m_m_0;
-// 	AmpParameter vertex_1_m_m_p1;
-// 	AmpParameter vertex_1_m_m_p2;
-// 
-// 	AmpParameter vertex_1_m_p_m2;
-// 	AmpParameter vertex_1_m_p_m1;
-// 	AmpParameter vertex_1_m_p_0;
-// 	AmpParameter vertex_1_m_p_p1;
-// 	AmpParameter vertex_1_m_p_p2;
-// 
-// 	AmpParameter vertex_1_p_m_m2;
-// 	AmpParameter vertex_1_p_m_m1;
-// 	AmpParameter vertex_1_p_m_0;
-// 	AmpParameter vertex_1_p_m_p1;
-// 	AmpParameter vertex_1_p_m_p2;
-// 
-// 	AmpParameter vertex_1_p_p_m2;
-// 	AmpParameter vertex_1_p_p_m1;
-// 	AmpParameter vertex_1_p_p_0;
-// 	AmpParameter vertex_1_p_p_p1;
-// 	AmpParameter vertex_1_p_p_p2;
-// 
-// 	AmpParameter vertex_2_m_m_m2;
-// 	AmpParameter vertex_2_m_m_m1;
-// 	AmpParameter vertex_2_m_m_0;
-// 	AmpParameter vertex_2_m_m_p1;
-// 	AmpParameter vertex_2_m_m_p2;
-// 
-// 	AmpParameter vertex_2_m_p_m2;
-// 	AmpParameter vertex_2_m_p_m1;
-// 	AmpParameter vertex_2_m_p_0;
-// 	AmpParameter vertex_2_m_p_p1;
-// 	AmpParameter vertex_2_m_p_p2;
-// 
-// 	AmpParameter vertex_2_p_m_m2;
-// 	AmpParameter vertex_2_p_m_m1;
-// 	AmpParameter vertex_2_p_m_0;
-// 	AmpParameter vertex_2_p_m_p1;
-// 	AmpParameter vertex_2_p_m_p2;
-// 
-// 	AmpParameter vertex_2_p_p_m2;
-// 	AmpParameter vertex_2_p_p_m1;
-// 	AmpParameter vertex_2_p_p_0;
-// 	AmpParameter vertex_2_p_p_p1;
-// 	AmpParameter vertex_2_p_p_p2;
 
 	AmpParameter dalitz_alpha;
 	AmpParameter dalitz_beta;
