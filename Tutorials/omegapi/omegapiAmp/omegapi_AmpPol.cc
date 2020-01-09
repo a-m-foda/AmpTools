@@ -217,9 +217,9 @@ omegapi_AmpPol::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
 			      };//hel_c_spin_p_odd = 0 & hel_c_spin_m_even = 0 
     
   GDouble vertex[3][2][2][5]= {//symmetry eq(7) assuming tau_e = +1
-			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} },
-			      { {0.0, 0.0, vertex_0_p_m_0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} } },
-
+			      { { {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0}, {0.0, 0.0, vertex_0_m_m_0, 0.0, 0.0} },
+			      { {0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} } },
+	  
 			      { { {0.0, vertex_1_m_m_m1, vertex_1_m_m_0, vertex_1_m_m_p1, 0.0}, {0.0, vertex_1_m_m_p1, -vertex_1_m_m_0, vertex_1_m_m_m1, 0.0} }, 
 			      { {0.0, vertex_1_p_m_m1, vertex_1_p_m_0, vertex_1_p_m_p1, 0.0}, {0.0, -vertex_1_p_m_p1, vertex_1_p_m_0, -vertex_1_p_m_m1, 0.0} } },
 
