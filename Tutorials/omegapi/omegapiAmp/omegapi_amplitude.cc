@@ -181,7 +181,7 @@ omegapi_amplitude::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
 		  GDouble hel_amp = 0.0;
 
 		  for(int l = 0; l <= 2; l++)//partial waves (l).
-		  {if ( (parity == -1 && l% 2 == 0) || (parity == 1 && l%2 != 0) ) continue;
+		  {//if ( (parity == -1 && l% 2 == 0) || (parity == 1 && l%2 != 0) ) continue;
 		  
 		  hel_amp += hel_c[l] * clebschGordan(l, 1, 0, lambda, spin, lambda);
 		  }//loop over l
