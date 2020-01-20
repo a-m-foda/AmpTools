@@ -109,7 +109,9 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
 	GDouble Pgamma=polFraction;//fixed beam polarization fraction
 	if(polAngle == -1)
 	Pgamma = 0.;//if beam is amorphous set polarization fraction to 0
-	else if(polFrac_vs_E!=NULL){
+/*	else if(polFrac_vs_E!=NULL){
+	//This part causes seg fault with 34 amplitudes or more with gen_amp and gen_omegapi.
+	//Not needed for fixed beam pol angle and frac.
 	int bin = polFrac_vs_E->GetXaxis()->FindBin(beam.E());
 
 	if (bin == 0 || bin > polFrac_vs_E->GetXaxis()->GetNbins()){
@@ -117,7 +119,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
 	}
 	else
 	 Pgamma = polFrac_vs_E->GetBinContent(bin);
-	}
+	}*/
 
   //Calculate decay angles in helicity frame
   vector <double> locthetaphi = getomegapiAngles(polAngle, omega, X, beam, Gammap);
