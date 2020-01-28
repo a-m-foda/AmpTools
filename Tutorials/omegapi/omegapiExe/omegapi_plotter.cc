@@ -27,6 +27,7 @@
 #include "omegapiDataIO/ROOTDataReaderTEM.h"
 #include "omegapiAmp/omegapiAngAmp.h"
 #include "omegapiAmp/omegapi_AmpPol.h"
+#include "omegapiAmp/omegapi_amplitude.h"
 
 #include "MinuitInterface/MinuitMinimizationManager.h"
 #include "IUAmpTools/ConfigFileParser.h"
@@ -38,6 +39,8 @@ void atiSetup(){
   
   AmpToolsInterface::registerAmplitude( omegapiAngAmp() );
   AmpToolsInterface::registerAmplitude( omegapi_AmpPol() );
+  AmpToolsInterface::registerAmplitude( omegapi_amplitude() );
+
   AmpToolsInterface::registerDataReader( ROOTDataReader() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderWithTCut() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderTEM() );
@@ -148,25 +151,14 @@ int main( int argc, char* argv[] ){
 
       // set unique histogram name for each plot (could put in directories...)
         string histname =  "";
-             if (ivar == OmegaPiPlotGenerator::kOmegaMass)  histname += "MOmega";
-/*        if (ivar == OmegaPiPlotGenerator::mamplitudep_real)  histname += "Re(Amp+) vs M";
-	else if (ivar == OmegaPiPlotGenerator::mamplitudep_imag)  histname += "Im(Amp+) vs M";
-	else if (ivar == OmegaPiPlotGenerator::mamplitudem_imag)  histname += "Im(Amp-) vs M";
-	else if (ivar == OmegaPiPlotGenerator::mamplitudem_imag)  histname += "Im(Amp-) vs M";
-	else if (ivar == OmegaPiPlotGenerator::minetnsity)  histname += "Intensity vs M";
+             if (ivar == OmegaPiPlotGenerator::kOmegaPiMass)  histname += "MOmegaPi";
+             else if (ivar == OmegaPiPlotGenerator::kCosTheta)  histname += "CosTheta";
+             else if (ivar == OmegaPiPlotGenerator::kPhi)  histname += "Phi";
+             else if (ivar == OmegaPiPlotGenerator::kCosThetaH)  histname += "CosTheta_H";
+             else if (ivar == OmegaPiPlotGenerator::kPhiH)  histname += "Phi_H";
+             else if (ivar == OmegaPiPlotGenerator::kProd_Ang)  histname += "Prod_Ang";
+             else if (ivar == OmegaPiPlotGenerator::kt)  histname += "t";
 
-	else if (ivar == OmegaPiPlotGenerator::tamplitudep_real)  histname += "Re(Amp+) vs Mand-t";
-	else if (ivar == OmegaPiPlotGenerator::tamplitudep_imag)  histname += "Im(Amp+) vs Mand-t";
-	else if (ivar == OmegaPiPlotGenerator::tamplitudem_real)  histname += "Re(Amp-) vs Mand-t";
-	else if (ivar == OmegaPiPlotGenerator::tamplitudem_imag)  histname += "Im(Amp-) vs Mand-t";
-	else if (ivar == OmegaPiPlotGenerator::tinetnsity)  histname += "Intensity vs Mand-t";
-        
-	else if (ivar == OmegaPiPlotGenerator::eamplitudep_real)  histname += "Re(Amp+) vs Beam E";
-	else if (ivar == OmegaPiPlotGenerator::eamplitudep_imag)  histname += "Im(Amp+) vs Beam E";
-	else if (ivar == OmegaPiPlotGenerator::eamplitudem_real)  histname += "Re(Amp-) vs Beam E";
-	else if (ivar == OmegaPiPlotGenerator::eamplitudem_imag)  histname += "Im(Amp-) vs Beam E";
-	else if (ivar == OmegaPiPlotGenerator::einetnsity)  histname += "Intensity vs Beam E";
-*/
 	else continue;
 
         if (iplot == PlotGenerator::kData) histname += "dat";
@@ -199,39 +191,29 @@ int main( int argc, char* argv[] ){
     // ************************
     // retrieve SDME parameters for plotting and asymmetry
     // ************************
-
+/*
   cout << "Checking Parameters" << endl;
 // parameters to check
   vector< string > pars;
 
   pars.push_back("hel_c_0_m_1");
+
   pars.push_back("hel_c_1_m_1");
+
   pars.push_back("hel_c_1_p_0");
   pars.push_back("hel_c_1_p_2");
+
   pars.push_back("hel_c_2_m_1");
+
   pars.push_back("hel_c_2_p_2");
-  pars.push_back("vertex_0_m_m_0");
-  pars.push_back("vertex_0_p_m_0");
-  pars.push_back("vertex_1_m_m_m1");
-  pars.push_back("vertex_1_m_m_0");
-  pars.push_back("vertex_1_m_m_p1");
-  pars.push_back("vertex_1_p_m_m1");
-  pars.push_back("vertex_1_p_m_0");
-  pars.push_back("vertex_1_p_m_p1");
-  pars.push_back("vertex_2_m_m_m2");
-  pars.push_back("vertex_2_m_m_m1");
-  pars.push_back("vertex_2_m_m_0");
-  pars.push_back("vertex_2_m_m_p1");
-  pars.push_back("vertex_2_m_m_p2");
-  pars.push_back("vertex_2_p_m_m2");
-  pars.push_back("vertex_2_p_m_m1");
-  pars.push_back("vertex_2_p_m_0");
-  pars.push_back("vertex_2_p_m_p1");
-  pars.push_back("vertex_2_p_m_p2");
-  pars.push_back("dalitz_alpha");
+
   pars.push_back("dalitz_beta");
   pars.push_back("dalitz_gamma");
   pars.push_back("dalitz_delta");
+
+  pars.push_back("polFrac");
+
+
 
   // file for writing parameters (later switch to putting in ROOT file)
   ofstream outfile;
@@ -262,7 +244,7 @@ int main( int argc, char* argv[] ){
 //   outfile << P << "\t" << P_err << "\t";
 
   outfile << endl;
-
+*/
     // ************************
     // start the GUI
     // ************************
@@ -296,5 +278,4 @@ int main( int argc, char* argv[] ){
   return 0;
 
 }
-
 
