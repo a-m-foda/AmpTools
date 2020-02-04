@@ -137,7 +137,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
   userVars[uv_Pgamma] = Pgamma;
   
 ///////////////////////////////////////////// Dalitz Parameters ///////////////////////////////
-  double dalitz_s = rho.M();//s=M2(pip pim)
+  double dalitz_s = rho.M2();//s=M2(pip pim)
   double dalitz_t = (rhos_pip+omegas_pi).M2();//t=M2(pip pi0)
   double dalitz_u = (rhos_pim+omegas_pi).M2();//u=M2(pim pi0)
   double m3pi = (2*139.57018)+134.9766;
