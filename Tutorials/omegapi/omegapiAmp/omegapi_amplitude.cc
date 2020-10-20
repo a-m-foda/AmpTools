@@ -37,7 +37,7 @@ omegapi_amplitude::omegapi_amplitude( const vector< string >& args ):
 		polFraction = AmpParameter( args[7+4+2] ); // polarization fraction
 		std::cout << "Fixed polarization fraction =" << polFraction << " and pol.angle= " << polAngle << " degrees." << std::endl;
 	}
-	else if (args.size() == (7+4+2)){//beam properties requires halld_sim
+/*	else if (args.size() == (7+4+2)){//beam properties requires halld_sim
 		// BeamProperties configuration file
 		TString beamConfigFile = args[7+4+1].c_str();
 		BeamProperties beamProp(beamConfigFile);
@@ -49,7 +49,7 @@ omegapi_amplitude::omegapi_amplitude( const vector< string >& args ):
 		for(Int_t i=0; i<polFrac_vs_E->GetXaxis()->GetNbins()+2; i++){
 			//cout << polFrac_vs_E->GetBinContent(i) << endl;
 		}
-	}
+	}*/
 	else
 	assert(0);
 
