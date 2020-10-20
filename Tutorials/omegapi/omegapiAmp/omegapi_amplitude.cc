@@ -37,7 +37,7 @@ omegapi_amplitude::omegapi_amplitude( const vector< string >& args ):
 		polFraction = AmpParameter( args[7+4+2] ); // polarization fraction
 		std::cout << "Fixed polarization fraction =" << polFraction << " and pol.angle= " << polAngle << " degrees." << std::endl;
 	}
-/*	else if (args.size() == (7+4+2)){//beam properties requires halld_sim
+	else if (args.size() == (7+4+2)){//beam properties requires halld_sim
 		// BeamProperties configuration file
 		TString beamConfigFile = args[7+4+1].c_str();
 		BeamProperties beamProp(beamConfigFile);
@@ -49,7 +49,7 @@ omegapi_amplitude::omegapi_amplitude( const vector< string >& args ):
 		for(Int_t i=0; i<polFrac_vs_E->GetXaxis()->GetNbins()+2; i++){
 			//cout << polFrac_vs_E->GetBinContent(i) << endl;
 		}
-	}*/
+	}
 	else
 	assert(0);
 
@@ -57,7 +57,7 @@ omegapi_amplitude::omegapi_amplitude( const vector< string >& args ):
     lambda_gamma = atoi(args[1].c_str() );
     spin = atoi(args[2].c_str() );
     parity = atoi(args[3].c_str() );
-    helicity = atoi(args[4].c_str() );
+    spin_proj = atoi(args[4].c_str() );
     
     c_0 = AmpParameter(args[5]);
     registerParameter(c_0);
@@ -109,7 +109,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
 	GDouble Pgamma=polFraction;//fixed beam polarization fraction
 	if(polAngle == -1)
 	Pgamma = 0.;//if beam is amorphous set polarization fraction to 0
-/*	else if(polFrac_vs_E!=NULL){
+	else if(polFrac_vs_E!=NULL){
 	//This part causes seg fault with 34 amplitudes or more with gen_amp and gen_omegapi.
 	//Not needed for fixed beam pol angle and frac.
 	int bin = polFrac_vs_E->GetXaxis()->FindBin(beam.E());
@@ -119,7 +119,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
 	}
 	else
 	 Pgamma = polFrac_vs_E->GetBinContent(bin);
-	}*/
+	}
 
   //Calculate decay angles in helicity frame
   vector <double> locthetaphi = getomegapiAngles(polAngle, omega, X, beam, Gammap);
@@ -132,7 +132,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
   userVars[uv_cosThetaH] = TMath::Cos(locthetaphih[0]);
   userVars[uv_PhiH] = locthetaphih[1];
 
-  userVars[uv_prod_angle] = locthetaphi[2];
+  userVars[uv_prod_angle] = locthetaphi[2];//polAngle;//locthetaphi[2];
 
   userVars[uv_Pgamma] = Pgamma;
   
@@ -140,9 +140,9 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
   double dalitz_s = rho.M2();//s=M2(pip pim)
   double dalitz_t = (rhos_pip+omegas_pi).M2();//t=M2(pip pi0)
   double dalitz_u = (rhos_pim+omegas_pi).M2();//u=M2(pim pi0)
-  double m3pi = (2*139.57018)+134.9766;
+  double m3pi = (2*0.13957018)+0.1349766;
   double dalitz_d = 2*omega.M()*( omega.M() - m3pi);
-  double dalitz_sc = (1/3)*( omega.M2() - rhos_pip.M2() - rhos_pim.M2() - omegas_pi.M2());
+  double dalitz_sc = (1/3.)*( omega.M2() - rhos_pip.M2() - rhos_pim.M2() - omegas_pi.M2());
   double dalitzx = sqrt(3)*(dalitz_t - dalitz_u)/dalitz_d;
   double dalitzy = 3*(dalitz_sc - dalitz_s)/dalitz_d;
   double dalitz_z = dalitzx*dalitzx + dalitzy*dalitzy;
@@ -167,19 +167,20 @@ omegapi_amplitude::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
    GDouble cosThetaH = userVars[uv_cosThetaH];
    GDouble PhiH = userVars[uv_PhiH];
    GDouble prod_angle = userVars[uv_prod_angle];
+
    GDouble polfrac = userVars[uv_Pgamma];
    GDouble dalitz_z = userVars[uv_dalitz_z];
    GDouble dalitz_sin3theta = userVars[uv_dalitz_sin3theta];
 
-   GDouble G = sqrt(1 + 2 * dalitz_alpha * dalitz_z + 2 * dalitz_beta * pow(dalitz_z,3/2) * dalitz_sin3theta
-			 + 2 * dalitz_gamma * pow(dalitz_z,2) + 2 * dalitz_delta * pow(dalitz_z,5/2) * dalitz_sin3theta );
+   GDouble G = sqrt(1 + 2 * dalitz_alpha * dalitz_z + 2 * dalitz_beta * pow(dalitz_z,3/2.) * dalitz_sin3theta
+			 + 2 * dalitz_gamma * pow(dalitz_z,2) + 2 * dalitz_delta * pow(dalitz_z,5/2.) * dalitz_sin3theta );
 
    GDouble hel_c[3] = { c_0, c_1, c_2};
-   
+
  complex <GDouble> amplitude = CZero;
- 
+
    for (int lambda = -1; lambda <= 1; lambda++)//omega helicity
-	      {
+      {
 		  GDouble hel_amp = 0.0;
 
 		  for(int l = 0; l <= 2; l++)//partial waves (l).
@@ -187,20 +188,35 @@ omegapi_amplitude::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
 		  
 		  hel_amp += hel_c[l] * clebschGordan(l, 1, 0, lambda, spin, lambda);
 		  }//loop over l
-		  
-		  amplitude += wignerD( spin, helicity, lambda, cosTheta, Phi ) * hel_amp * wignerD( 1, lambda, 0, cosThetaH, PhiH ) * G;
-		}//loop over lambda
-		
+
+     amplitude += conj(wignerD( spin, spin_proj, lambda, cosTheta, Phi )) * hel_amp * conj(wignerD( 1, lambda, 0, cosThetaH, PhiH ));// * G;
+
+        }//loop over lambda
 
  complex <GDouble> prefactor ( cos( lambda_gamma * prod_angle ), sin( lambda_gamma * prod_angle ));
- 
- if (sign == -1 && lambda_gamma == -1){amplitude *= -1*sqrt( ( 1 + (sign * polfrac) )/2 ) * prefactor;}
+// complex <GDouble> prefactor ( cos( prod_angle ), sin( prod_angle ));
+
+ if (sign == 1 && lambda_gamma == -1){amplitude *= -1*sqrt( ( 1 +  polfrac) /2 ) * prefactor;}
  else{amplitude *= sqrt( ( 1 + (sign * polfrac) )/2 ) * prefactor;}
 
 //Instead of the vertices "scale" in configuration file.
-// if( (parity == +1 && ((spin+helicity)%2 == 0) ) || (parity == -1 && ((spin+helicity)%2 != 0) ) ){amplitude *= -1;} 
+ if( (parity == +1 && ((spin+spin_proj)%2 == 0) ) || (parity == -1 && ((spin+spin_proj)%2 != 0) ) ){amplitude *= -1;} 
 
+/*
+//this part is to check if there are nan values in the amplitude
+double real = amplitude.real(); double imag = amplitude.imag();
+
+bool real_bol = std::isnan(real); bool imag_bol = std::isnan(imag);
+
+if ( real_bol || imag_bol ) {
+cout << "amplitude = " << amplitude << endl;
+return CZero;
+}
+else{
+*/
 return amplitude;
+//}
+
 }
 
 void omegapi_amplitude::updatePar( const AmpParameter& par ){
@@ -216,4 +232,3 @@ omegapi_amplitude::launchGPUKernel( dim3 dimGrid, dim3 dimBlock, GPU_AMP_PROTO )
 			  sign, lambda_gamma, spin, parity, helicity, c_0, c_1, c_2, dalitz_alpha, dalitz_beta, dalitz_gamma, dalitz_delta, polAngle, polFraction);
 }
 #endif //GPU_ACCELERATION
-
