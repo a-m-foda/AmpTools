@@ -29,6 +29,10 @@
 #include "omegapiAmp/omegapi_AmpPol.h"
 #include "omegapiAmp/omegapi_amplitude.h"
 
+#include "omegapiAmp/BreitWigner.h"
+#include "omegapiAmp/BreitWigner3body.h"
+#include "omegapiAmp/Uniform.h"
+
 #include "MinuitInterface/MinuitMinimizationManager.h"
 #include "IUAmpTools/ConfigFileParser.h"
 #include "IUAmpTools/ConfigurationInfo.h"
@@ -40,6 +44,10 @@ void atiSetup(){
   AmpToolsInterface::registerAmplitude( omegapiAngAmp() );
   AmpToolsInterface::registerAmplitude( omegapi_AmpPol() );
   AmpToolsInterface::registerAmplitude( omegapi_amplitude() );
+
+  AmpToolsInterface::registerAmplitude( BreitWigner() );
+  AmpToolsInterface::registerAmplitude( BreitWigner3body() );
+  AmpToolsInterface::registerAmplitude( Uniform() );
 
   AmpToolsInterface::registerDataReader( ROOTDataReader() );
   AmpToolsInterface::registerDataReader( ROOTDataReaderWithTCut() );
