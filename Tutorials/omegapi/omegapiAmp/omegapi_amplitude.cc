@@ -189,7 +189,7 @@ omegapi_amplitude::calcAmplitude( GDouble** pKin, GDouble* userVars ) const
 		  hel_amp += hel_c[l] * clebschGordan(l, 1, 0, lambda, spin, lambda);
 		  }//loop over l
 
-     amplitude += conj(wignerD( spin, spin_proj, lambda, cosTheta, Phi )) * hel_amp * conj(wignerD( 1, lambda, 0, cosThetaH, PhiH ));// * G;
+     amplitude += conj(wignerD( spin, spin_proj, lambda, cosTheta, Phi )) * hel_amp * conj(wignerD( 1, lambda, 0, cosThetaH, PhiH )) * G;
 
         }//loop over lambda
 
