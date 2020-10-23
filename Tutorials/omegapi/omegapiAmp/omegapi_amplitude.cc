@@ -111,6 +111,7 @@ omegapi_amplitude::calcUserVars( GDouble** pKin, GDouble* userVars ) const
 	Pgamma = 0.;//if beam is amorphous set polarization fraction to 0
 	else if(polFrac_vs_E!=NULL){
 	//This part causes seg fault with 34 amplitudes or more with gen_amp and gen_omegapi.
+	//Also, casues omegapiplotgenerator to crash all the time.
 	//Not needed for fixed beam pol angle and frac.
 	int bin = polFrac_vs_E->GetXaxis()->FindBin(beam.E());
 
